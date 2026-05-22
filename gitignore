@@ -1,0 +1,34 @@
+# ModelSim / QuestaSim
+work/
+transcript
+vsim.wlf
+*.vcd
+*.wlf
+*.log
+
+# Xcelium / Cadence
+xcelium.d/
+*.shm/
+*.diag
+
+# VCS / Synopsys
+simv
+simv.daidir/
+csrc/
+ucli.key
+vc_hdrs.h
+DVEfiles/
+
+# Riviera-PRO / Aldec
+library.cfg
+*.asdb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
