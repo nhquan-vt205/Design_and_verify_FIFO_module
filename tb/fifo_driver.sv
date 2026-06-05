@@ -5,7 +5,7 @@
 //  Giao thức timing:
 //    1 transaction = 1 chu kỳ clock
 //    Khi có txn: @(posedge clk) → #1 → gán wr_en/rd_en/din
-//    Khi mailbox rỗng: chặn tại get(), DUT giữ nguyên tín hiệu
+//    Khi mailbox rỗng: tự de-assert wr_en/rd_en về 0 (idle)
 //
 //  Không dùng virtual interface:
 //    run() nhận ref trỏ trực tiếp đến signal của module fifo_tb.
@@ -50,13 +50,17 @@ class fifo_driver;
         din   = 8'h00;
 
         forever begin
-            gen2drv.get(txn);    // chặn đến khi Generator gửi txn mới
             @(posedge clk); #1;  // đồng bộ rising edge + setup delay #1
-            if (rst_n) begin
+            if (rst_n && gen2drv.try_get(txn)) begin
+                // Có txn mới → drive DUT theo txn
                 wr_en = txn.wr_en;
                 rd_en = txn.rd_en;
                 din   = txn.din;
                 txn_count++;
+            end else begin
+                // Mailbox rỗng hoặc đang reset → idle DUT
+                wr_en = 1'b0;
+                rd_en = 1'b0;
             end
         end
     endtask

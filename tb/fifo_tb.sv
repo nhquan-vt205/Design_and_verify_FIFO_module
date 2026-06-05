@@ -35,15 +35,15 @@
 //  └─────────────────────────────────────────────────────────────┘
 //
 //  Include / compile order:
-//    1. sync_fifo.sv        (RTL - vlog riêng)
-//    2. fifo_coverage.sv    (module - vlog riêng)
-//    3. fifo_assertions.sv  (module - vlog riêng)
-//    4. fifo_tb.sv          (top - vlog riêng, `include 5 class bên dưới)
+//    1. sync_fifo.sv        (RTL - vlog riêng hoặc design.sv trên EDA Playground)
+//    2. fifo_tb.sv          (top - `include tất cả bên dưới)
 //       └── `include fifo_transaction.sv
 //       └── `include fifo_generator.sv
 //       └── `include fifo_driver.sv
 //       └── `include fifo_monitor.sv    (+ fifo_result)
 //       └── `include fifo_scoreboard.sv
+//       └── `include fifo_coverage.sv   (module — covergroup)
+//       └── `include fifo_assertions.sv (module — SVA)
 // =============================================================
 
 // Class files được include ở đây theo đúng thứ tự phụ thuộc
@@ -52,6 +52,8 @@
 `include "fifo_driver.sv"
 `include "fifo_monitor.sv"      // defines fifo_result + fifo_monitor
 `include "fifo_scoreboard.sv"   // uses fifo_result (phải sau monitor)
+`include "fifo_coverage.sv"     // module — coverage functional
+`include "fifo_assertions.sv"   // module — SVA assertions
 
 
 // =============================================================
