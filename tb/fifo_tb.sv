@@ -167,6 +167,13 @@ module fifo_tb;
     // ==========================================================
     //  MAIN — simulation flow
     // ==========================================================
+    // Safety timeout — tránh treo vĩnh viễn (100_000 cycles × 10ns = 1ms sim time)
+    initial begin
+        #1_000_000;
+        $display("\n[TIMEOUT] Simulation exceeded max time — force quit!");
+        $finish;
+    end
+
     initial begin
         $dumpfile("fifo_tb.vcd");
         $dumpvars(0, fifo_tb);
@@ -198,10 +205,19 @@ module fifo_tb;
 
         // --------------------------------------------------
         // BƯỚC 4: Chờ mailboxes xả hết
-        //   → Đảm bảo mọi txn đã được Drive và Scoreboard check
+        //   Dùng polling loop thay vì wait() vì wait(mbx.num())
+        //   có thể không reactive trên một số simulator.
         // --------------------------------------------------
-        wait (gen2drv.num() == 0);   // Driver đã nhận tất cả txns
-        wait (mon2sb.num()  == 0);   // Scoreboard đã xử lý tất cả
+        $display("\n[TB] Waiting for Driver to drain gen2drv...");
+        while (gen2drv.num() > 0) @(posedge clk);
+        $display("[TB] gen2drv drained. Waiting for Scoreboard...");
+
+        // Chờ thêm vài cycle để Monitor push hết events cuối
+        repeat (5) @(posedge clk);
+
+        while (mon2sb.num() > 0) @(posedge clk);
+        $display("[TB] mon2sb drained. Settling...");
+
         repeat (20) @(posedge clk);  // Settling time cho pipeline
 
         // --------------------------------------------------
