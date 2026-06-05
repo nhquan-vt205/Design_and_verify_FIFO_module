@@ -1,0 +1,47 @@
+# =============================================================
+#  .gitignore — Chỉ commit source code (.sv)
+#  Bỏ qua: scripts (.sh), docs (.md), simulation outputs
+#  Muốn commit file bị ignore: git add -f <file>
+# =============================================================
+
+# ── Scripts & Documentation ──────────────────────────────────
+# Bỏ qua mặc định, dùng `git add -f` nếu muốn commit
+*.sh
+*.md
+
+# ── Simulation outputs ───────────────────────────────────────
+# ModelSim / QuestaSim
+work/
+transcript
+vsim.wlf
+*.vcd
+*.wlf
+*.log
+
+# Xcelium / Cadence
+xcelium.d/
+*.shm/
+*.diag
+
+# VCS / Synopsys
+simv
+simv.daidir/
+csrc/
+ucli.key
+vc_hdrs.h
+DVEfiles/
+
+# Riviera-PRO / Aldec
+library.cfg
+*.asdb
+
+# Icarus Verilog
+*.vvp
+
+# ── OS & Editor ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
